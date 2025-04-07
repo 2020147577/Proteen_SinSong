@@ -1,0 +1,5 @@
+# This project uses standard libraries:
+# - turtle (for graphics)
+# - tkinter (for GUI)
+
+# No pip-installable packages are required.
