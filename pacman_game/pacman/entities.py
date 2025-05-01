@@ -1,8 +1,8 @@
 # Dot, Ghost, Pacman
 # Other variance
 import tkinter as tk
-from .settings import CELL_SIZE, GRID_WIDTH, GRID_HEIGHT
-from .utils import cell_to_coords
+from pacman_game.pacman.settings import CELL_SIZE, GRID_WIDTH, GRID_HEIGHT
+from pacman_game.pacman.utils import cell_to_coords
 
 
 class Pacman:

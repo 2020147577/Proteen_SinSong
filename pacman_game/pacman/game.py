@@ -2,9 +2,9 @@
 
 # game.py
 import tkinter as tk
-from .settings import CELL_SIZE, GRID_WIDTH, GRID_HEIGHT, MOVE_DELAY, DIRS
-from .entities import Pacman, Dot
-from .utils import cell_to_coords
+from pacman_game.pacman.settings import CELL_SIZE, GRID_WIDTH, GRID_HEIGHT, MOVE_DELAY, DIRS
+from pacman_game.pacman.entities import Pacman, Dot
+from pacman_game.pacman.utils import cell_to_coords
 
 
 class PacmanGame:

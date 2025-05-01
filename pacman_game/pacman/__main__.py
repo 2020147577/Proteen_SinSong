@@ -1,7 +1,7 @@
 # entry point (`python -m pacman`)
 # this kind of command line based entry maybe too hard for students..
 import tkinter as tk
-from .game import PacmanGame
+from pacman_game.pacman.game import PacmanGame
 
 
 def main():

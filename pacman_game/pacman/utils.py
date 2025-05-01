@@ -1,5 +1,5 @@
 # grid ↔ canvas coords, collision checks
-from .settings import CELL_SIZE
+from pacman_game.pacman.settings import CELL_SIZE
 
 
 def cell_to_coords(i, j):
