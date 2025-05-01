@@ -1,0 +1,1 @@
+# requirements applying for both pacman/snake

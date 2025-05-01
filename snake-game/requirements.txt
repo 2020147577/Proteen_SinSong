@@ -1,0 +1,4 @@
+# This project uses standard libraries:
+# - turtle (for design)
+
+# No pip-installable packages are required.
