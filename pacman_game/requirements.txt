@@ -1,4 +1,16 @@
 # This project uses standard libraries:
 # - tkinter (for GUI)
 
-# No pip-installable packages are required.
+# Minimum pip version (ensure you’re up-to-date)
+pip>=23.3.1
+
+# Packaging tools
+twine>=4.0.0
+setuptools>=65.0.0
+wheel>=0.38.4
+
+# Third-party libraries
+Pillow>=9.0.0
+
+# Development / Testing (optional)
+pytest>=7.0.0
