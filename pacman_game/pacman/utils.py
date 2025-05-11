@@ -115,6 +115,6 @@ def cell_to_pixel(i, j):
 # assign CELL_SIZE dynamically
 cell_to_pixel.CELL = CELL_SIZE
 
-if __name__ == '__main__':
-    trim_pacman_image("pacman_open.png", "pacman_open_out")
-    trim_pacman_image("pacman_closed.png", "pacman_closed_out")
+# if __name__ == '__main__':
+#     trim_pacman_image("pacman_open.png", "pacman_open_out")
+#     trim_pacman_image("pacman_closed.png", "pacman_closed_out")
