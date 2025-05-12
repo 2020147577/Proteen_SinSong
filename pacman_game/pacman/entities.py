@@ -53,6 +53,14 @@ class Ghost:
         ni = (self.i + dx) % GRID_WIDTH
         nj = (self.j + dy) % GRID_HEIGHT
         # if blocked, pick a new valid direction
+        '''
+        실습 2: 고스트가 벽에 부딪히는 경우가 아니더라도 방향을 매번 변경할 수 있도록 한다!
+        Hint: 아래 if문은 passable하지 않은 경우에만 방향을 변경할 수 있도록 되어 있음
+        -> 그것과 무관하게 항상 방향을 변경할 수 있도록 수정!
+        
+        실습 3(도전!): 실습 2에서 앞뒤로 진동하듯이 고스트가 움직이는 현상을 방지하도록 갈림길에서만 방향을 변경!
+        Hint: 고스트가 현재 갈림길에 있다면 passable = True인 choices가 적어도 3개일 것!
+        '''
         if not passable(ni, nj):
             choices = [(1, 0), (-1, 0), (0, 1), (0, -1)]
             random.shuffle(choices)

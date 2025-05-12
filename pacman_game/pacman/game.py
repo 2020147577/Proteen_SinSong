@@ -2,7 +2,7 @@
 import tkinter as tk
 from pacman.settings import (
     MAP_LAYOUT, CELL_SIZE, WINDOW_SIZE,
-    PACMAN_DELAY, GHOST_DELAY,
+    PACMAN_DELAY, GHOST_DELAY, LOGO_COLOR,
     BG_COLOR, WALL_COLOR, INITIAL_LIVES
 )
 from pacman.utils import load_sprite, cell_to_pixel
@@ -25,12 +25,19 @@ class PacmanGame:
                 y1 = j * CELL_SIZE
                 x2 = x1 + CELL_SIZE
                 y2 = y1 + CELL_SIZE
-                if ch == '#':
+                '''
+                실습 1: $ 부분의 색을 변경하기
+                현재, 바로 아래 if문이 #, $인 경우 모두를 담당
+                새로 elif문을 만들어서 $의 경우를 별도 처리하도록 한다
+                Hint: 노란색으로 바꾸기 위해서 settings.py의 가장 아래부분을 참고
+                '''
+                if ch == '#' or ch == '$':
                     self.canvas.create_rectangle(
                         x1, y1, x2, y2,
                         fill=WALL_COLOR, width=0
                     )
                     self.walls.add((i, j))
+                # TODO: 이 사이에 새로운 elif를 넣어서 환성
                 elif ch in ('.', 'o'):
                     key = 'pellet' if ch == '.' else 'power_pellet'
                     img = load_sprite(key)
@@ -44,8 +51,8 @@ class PacmanGame:
 
         # actors
         self.pacman = Pacman(self.canvas, 1, 1)
-        self.ghosts = [Ghost(self.canvas, 10, 3, 'red'),
-                       Ghost(self.canvas, 8, 3, 'blue')]
+        self.ghosts = [Ghost(self.canvas, 12, 11, 'red'),
+                       Ghost(self.canvas, 12, 13, 'blue')]
 
         # game state
         self.running = True
