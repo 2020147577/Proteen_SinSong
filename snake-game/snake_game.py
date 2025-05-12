@@ -1,5 +1,5 @@
-# testing snake game
-from turtle import Turtle, Screen
+# import module
+import turtle
 import time
 import random
 
@@ -22,7 +22,7 @@ def right():
 
 # 뱀 몸통 생성
 def create_snake(pos):
-    snake_body = Turtle()
+    snake_body = turtle.Turtle()
     snake_body.shape("square")
     snake_body.color("orangered")
     snake_body.penup()
@@ -43,7 +43,7 @@ def score_update():
     score_pen.write(f"점수 : {score}", font=("", 15, "bold"))
 
 # 화면 설정
-screen = Screen()
+screen = turtle.Screen()
 screen.setup(600, 600)
 screen.bgcolor("khaki")
 screen.title("Snake Game")
@@ -57,7 +57,7 @@ for pos in start_pos:
     create_snake(pos)
 
 # 먹이 설정
-food = Turtle()
+food = turtle.Turtle()
 food.shape("circle")
 food.color("snow")
 food.penup()
@@ -66,7 +66,7 @@ food.goto(rand_pos())
 
 # 점수판
 score = 0
-score_pen = Turtle()
+score_pen = turtle.Turtle()
 score_pen.hideturtle()
 score_pen.penup()
 score_pen.goto(-270, 250)
