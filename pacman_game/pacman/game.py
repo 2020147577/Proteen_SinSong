@@ -1,65 +1,124 @@
-# PacmanGame class, main loop
-
 # game.py
 import tkinter as tk
-from pacman_game.pacman.settings import CELL_SIZE, GRID_WIDTH, GRID_HEIGHT, MOVE_DELAY, DIRS
-from pacman_game.pacman.entities import Pacman, Dot
-from pacman_game.pacman.utils import cell_to_coords
+from pacman.settings import (
+    MAP_LAYOUT, CELL_SIZE, WINDOW_SIZE,
+    PACMAN_DELAY, GHOST_DELAY,
+    BG_COLOR, WALL_COLOR, INITIAL_LIVES
+)
+from pacman.utils import load_sprite, cell_to_pixel
+from pacman.entities import Pacman, Ghost
 
 
 class PacmanGame:
     def __init__(self, root):
         self.root = root
-        self.canvas = tk.Canvas(root,
-            width=CELL_SIZE * GRID_WIDTH,
-            height=CELL_SIZE * GRID_HEIGHT,
-            bg='black')
+        self.canvas = tk.Canvas(root, width=WINDOW_SIZE[0], height=WINDOW_SIZE[1], bg=BG_COLOR)
         self.canvas.pack()
 
+        # walls and pellets
+        self.walls = set()
+        self.pellets = set()
+        self.pellet_ids = {}
+        for j, row in enumerate(MAP_LAYOUT):
+            for i, ch in enumerate(row):
+                x1 = i * CELL_SIZE
+                y1 = j * CELL_SIZE
+                x2 = x1 + CELL_SIZE
+                y2 = y1 + CELL_SIZE
+                if ch == '#':
+                    self.canvas.create_rectangle(
+                        x1, y1, x2, y2,
+                        fill=WALL_COLOR, width=0
+                    )
+                    self.walls.add((i, j))
+                elif ch in ('.', 'o'):
+                    key = 'pellet' if ch == '.' else 'power_pellet'
+                    img = load_sprite(key)
+                    pid = self.canvas.create_image(
+                        x1 + CELL_SIZE // 2,
+                        y1 + CELL_SIZE // 2,
+                        image=img
+                    )
+                    self.pellets.add((i, j))
+                    self.pellet_ids[(i, j)] = pid
+
+        # actors
+        self.pacman = Pacman(self.canvas, 1, 1)
+        self.ghosts = [Ghost(self.canvas, 10, 3, 'red'),
+                       Ghost(self.canvas, 8, 3, 'blue')]
+
+        # game state
+        self.running = True
+        self.lives = INITIAL_LIVES
         self.score = 0
-        self.score_text = self.canvas.create_text(
-            5, 5, anchor='nw', fill='white',
-            font=('Arial', 14), text='Score: 0')
 
-        # create dots
-        self.dots = {}
-        for i in range(GRID_WIDTH):
-            for j in range(GRID_HEIGHT):
-                dot = Dot(self.canvas, i, j)
-                self.dots[(i, j)] = dot
+        # UI text
+        self.score_txt = self.canvas.create_text(5, 5, anchor='nw', fill='white', font=('Arial', 14),
+                                                 text=f'Score: {self.score}')
+        self.lives_txt = self.canvas.create_text(5, 25, anchor='nw', fill='white', font=('Arial', 14),
+                                                 text=f'Lives: {self.lives}')
 
-        # create Pacman
-        start_x = GRID_WIDTH // 2
-        start_y = GRID_HEIGHT // 2
-        self.pacman = Pacman(self.canvas, start_x, start_y)
-        self.direction = (0, 0)
+        # input
+        root.bind('<Left>', lambda e: self.pacman.set_direction(-1, 0))
+        root.bind('<Right>', lambda e: self.pacman.set_direction(1, 0))
+        root.bind('<Up>', lambda e: self.pacman.set_direction(0, -1))
+        root.bind('<Down>', lambda e: self.pacman.set_direction(0, 1))
 
-        # key bindings
-        root.bind('<Left>',  self.change_dir)
-        root.bind('<Right>', self.change_dir)
-        root.bind('<Up>',    self.change_dir)
-        root.bind('<Down>',  self.change_dir)
+        # start loops
+        self.root.after(PACMAN_DELAY, self.move_pacman)
+        self.root.after(GHOST_DELAY, self.move_ghosts)
 
-        # start game loop
-        self.move()
+    def passable(self, i, j):
+        return (i, j) not in self.walls
 
-    def change_dir(self, event):
-        if event.keysym in DIRS:
-            self.direction = DIRS[event.keysym]
+    def move_pacman(self):
+        if not self.running: return
+        self.pacman.move_one_cell(self.passable)
+        pos = (self.pacman.i, self.pacman.j)
+        if pos in self.pellets:
+            self.pellets.remove(pos)
+            self.canvas.delete(self.pellet_ids.pop(pos))
+            self.score += 10
+            self.canvas.itemconfigure(self.score_txt, text=f'Score: {self.score}')
+            # win condition
+            if not self.pellets:
+                self.game_win()
+                return
+        # collision with ghosts
+        for g in self.ghosts:
+            if (g.i, g.j) == (self.pacman.i, self.pacman.j):
+                self.lives -= 1
+                self.canvas.itemconfigure(self.lives_txt, text=f'Lives: {self.lives}')
+                if self.lives > 0:
+                    # reset Pac-Man to start
+                    self.pacman.i, self.pacman.j = 1, 1
+                    self.canvas.coords(self.pacman.id, *cell_to_pixel(1, 1))
+                else:
+                    self.game_over()
+                    return
+        self.root.after(PACMAN_DELAY, self.move_pacman)
 
-    def move(self):
-        dx, dy = self.direction
-        self.pacman.move(dx, dy)
+    def move_ghosts(self):
+        if not self.running: return
+        for g in self.ghosts:
+            g.move_one_cell(self.passable)
+            if (g.i, g.j) == (self.pacman.i, self.pacman.j):
+                self.lives -= 1
+                self.canvas.itemconfigure(self.lives_txt, text=f'Lives: {self.lives}')
+                if self.lives > 0:
+                    self.pacman.i, self.pacman.j = 1, 1
+                    self.canvas.coords(self.pacman.id, *cell_to_pixel(1, 1))
+                else:
+                    self.game_over()
+                    return
+        self.root.after(GHOST_DELAY, self.move_ghosts)
 
-        # eat dot
-        pos = (self.pacman.x, self.pacman.y)
-        if pos in self.dots:
-            self.dots.pop(pos).remove()
-            self.score += 1
-            self.canvas.itemconfigure(
-                self.score_text,
-                text=f'Score: {self.score}'
-            )
+    def game_over(self):
+        self.running = False
+        w, h = WINDOW_SIZE
+        self.canvas.create_text(w // 2, h // 2, text='GAME OVER', fill='red', font=('Arial', 32, 'bold'))
 
-        # schedule next move
-        self.root.after(MOVE_DELAY, self.move)
+    def game_win(self):
+        self.running = False
+        w, h = WINDOW_SIZE
+        self.canvas.create_text(w // 2, h // 2, text='YOU WIN!', fill='yellow', font=('Arial', 32, 'bold'))

@@ -1,12 +1,11 @@
-# entry point (`python -m pacman`)
-# this kind of command line based entry maybe too hard for students..
+# __main__.py
 import tkinter as tk
-from pacman_game.pacman.game import PacmanGame
+from pacman.game import PacmanGame
 
 
 def main():
     root = tk.Tk()
-    root.title("Pacman")
+    root.title('Pacman')
     PacmanGame(root)
     root.mainloop()
 

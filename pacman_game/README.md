@@ -15,15 +15,15 @@
 ### 1. 가상 환경 생성 및 활성화
 
 #### macOS / Linux
+- project root(설치 스크립트가 있는 폴더)에서 실행
 ```bash
-# project root(설치 스크립트가 있는 폴더)에서 실행
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
 #### Windows (PowerShell)
+- project root에서 실행
 ```powershell
-# project root에서 실행
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
