@@ -4,9 +4,9 @@ def functionA():
     global x
     x = 0
 
-x = 2
+# x = 2
 # functionA()
-print(x)
+# print(x)
 
 
 # 실습 1: def factorial
@@ -44,7 +44,7 @@ def calculator(x1, x2, action):
     return 0
 
 
-x1 = int(input("첫번째 숫자: "))
-x2 = int(input("두번째 숫자: "))
-action = input("add/sub/mul: ")
-print(calculator(x1, x2, action))
+# x1 = int(input("첫번째 숫자: "))
+# x2 = int(input("두번째 숫자: "))
+# action = input("add/sub/mul: ")
+# print(calculator(x1, x2, action))
